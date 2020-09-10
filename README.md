@@ -1,2 +1,1 @@
-# shader_toy_study
-shader study
+# shadertoy 特效源码学习
