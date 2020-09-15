@@ -9,11 +9,15 @@
 ### 问题
   我们在使用并集去处理物体的交界处的时候，通常会得到这样的一个结果
 
-  <img src="./1.png" />
+  <p align="center">
+    <img src="1.png">
+  </p>
 
   这样看上去似乎达到了我们的效果，但是对于更高的要求时，这样棱角分明的效果显得很突兀，我们希望达到这样的效果
 
-  <img src="./2.png" />
+  <p align="center">
+    <img src="2.png">
+  </p>
 
 ### 解决方法
   针对上面的效果，[Inigo Quilez (iq)](https://iquilezles.org/)提出了smooth min的解决办法，假定a，b两值在一个控制点范围内存在相交，控制点范围为 (-k, k)，相交时我们分三种情况讨论
