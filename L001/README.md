@@ -63,7 +63,7 @@
   最终转换为glsl代码为
   <br />
   <code>
-  function smin(a, b, k) {<br />
+  float smin(a, b, k) {<br />
     &nbsp;&nbsp;float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);<br />
     &nbsp;&nbsp;return mix(a, b, h) - k * h * (1.0 - h);<br />
   }
