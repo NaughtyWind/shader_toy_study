@@ -46,28 +46,27 @@
   讨论边界情况，a-b = -k与k 时，h分别取得0和1，再获取对应边界情况的导数公式，联立上导数公式与两种边界情况的导数公式，获取修正后的导数公式
   <br/>
   <br />
-  <code>
+  `
   df/dx = da/dx + dh/dx * (b - a) + h * (db/dx - da/dx) - k(dh/dx) + 2kh(dh/dx)
-  </code>
+  `
   <br />
   <br />
   这样转换成实际的数学公式为
   <br />
   <br />
   <code>
-  f(a, b, k) = a + h(b - a) - kh + kh²<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-             = a(1 - h) + hb - kh(1 - h)
+  f(a, b, k) = a + h(b - a) - kh + kh² = a(1 - h) + hb - kh(1 - h)
   </code>
   <br />
   <br />
   最终转换为glsl代码为
   <br />
-  <code>
+  ```javascript
   float smin(a, b, k) {<br />
-    &nbsp;&nbsp;float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);<br />
-    &nbsp;&nbsp;return mix(a, b, h) - k * h * (1.0 - h);<br />
+    float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);
+    return mix(a, b, h) - k * h * (1.0 - h);<br />
   }
-  </code>
+ ```
 
   > end
 
