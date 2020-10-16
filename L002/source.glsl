@@ -11,26 +11,39 @@ const float EPSILON = 1e-3;
 #define AA
 
 // sea
-const int ITER_GEOMETRY = 3;
-const int ITER_FRAGMENT = 5;
-const float SEA_HEIGHT = 0.6;
-const float SEA_CHOPPY = 4.0;
-const float SEA_SPEED = 0.8;
-const float SEA_FREQ = 0.16;
-const vec3 SEA_BASE = vec3(0.0, 0.09, 0.18);
-const vec3 SEA_WATER_COLOR = vec3(0.8, 0.9, 0.6) * 0.6;
-#define SEA_TIME(1.0 + iTime * SEA_SPEED)
-const mat2 octave_m = mat2(1.6, 1.2, -1.2, 1.6);
+const int ITER_GEOMETRY = 3; // 
+const int ITER_FRAGMENT = 5; // 海洋波纹系数，系数越高越逼真
+const float SEA_HEIGHT = 0.6; // 海洋波浪起伏高度
+const float SEA_CHOPPY = 4.0; // 海水起伏锐化程度
+const float SEA_SPEED = 0.8; // 海水流动速度
+const float SEA_FREQ = 0.16; // 海水起伏密集度
+const vec3 SEA_BASE = vec3(0.0, 0.09, 0.18); // 海洋背景底色
+const vec3 SEA_WATER_COLOR = vec3(0.8, 0.9, 0.6) * 0.6; // 海水颜色
+#define SEA_TIME(1.0 + iTime * SEA_SPEED) // 
+const mat2 octave_m = mat2(1.6, 1.2, -1.2, 1.6); // 
 
 // math
+// 欧拉角，作者做了变形处理
 mat3 fromEuler(vec3 ang) {
   vec2 a1 = vec2(sin(ang.x), cos(ang.x));
   vec2 a2 = vec2(sin(ang.y), cos(ang.y));
   vec2 a3 = vec2(sin(ang.z), cos(ang.z));
   mat3 m;
-  m[0] = vec3(a1.y * a3.y + a1.x * a2.x * a3.x, a1.y * a2.x * a3.x + a3.y * a1.x, -a2.y * a3.x);
-  m[1] = vec3(-a2.y * a1.x, a1.y * a2.y, a2.x);
-  m[2] = vec3(a3.y * a1.x * a2.x + a1.y * a3.x, a1.x * a3.x - a1.y * a3.y * a2.x, a2.y * a3.y);
+  m[0] = vec3(
+    a1.y * a3.y + a1.x * a2.x * a3.x,
+    a1.y * a2.x * a3.x + a3.y * a1.x,
+    -a2.y * a3.x
+  );
+  m[1] = vec3(
+    -a2.y * a1.x,
+    a1.y * a2.y,
+    a2.x
+  );
+  m[2] = vec3(
+    a3.y * a1.x * a2.x + a1.y * a3.x,
+    a1.x * a3.x - a1.y * a3.y * a2.x,
+    a2.y * a3.y
+  );
   return m;
 }
 float hash(vec2 p) {
@@ -132,6 +145,7 @@ vec3 getNormal(vec3 p, float eps) {
   return normalize(n);
 }
 
+// 设置高度
 float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
   float tm = 0.0;
   float tx = 1000.0;
@@ -164,13 +178,16 @@ vec3 getPixel(in vec2 coord, float time) {
   /**
    * 根据时间设置光线参数
    * 包括角度，原点，方向
+   * 在方向上使用欧拉角(fromEuler)进行观察
    */
   vec3 ang = vec3(sin(time * 3.0) * 0.1, sin(time) * 0.2 + 0.3, time);
   vec3 ori = vec3(0.0, 3.5, time * 5.0);
-  vec3 dir = normalize(vec3(uv.xy, -2.0)); dir.z += length(uv) * 0.14;
+  vec3 dir = normalize(vec3(uv.xy, -2.0));
+  dir.z += length(uv) * 0.14;
   dir = normalize(dir) * fromEuler(ang);
 
   // tracing
+  // 追踪
   vec3 p;
   heightMapTracing(ori, dir, p);
   vec3 dist = p - ori;
